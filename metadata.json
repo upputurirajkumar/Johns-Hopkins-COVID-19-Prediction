@@ -1,0 +1,6 @@
+{
+  "name": "Johns Hopkins COVID-19 Prediction & ML Forecasting Platform",
+  "description": "Interactive epidemiological analysis and machine learning forecasting platform based on Johns Hopkins COVID-19 time-series data featuring Linear Regression, Decision Trees, Random Forest, and XGBoost models with scenario simulations and policy recommendations.",
+  "permissions": [],
+  "capabilities": []
+}
