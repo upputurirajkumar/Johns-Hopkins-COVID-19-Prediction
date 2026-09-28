@@ -1,20 +1,968 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m4.93 4.93 4.24 4.24'/%3E%3Cpath d='m14.83 9.17 4.24-4.24'/%3E%3Cpath d='m14.83 14.83 4.24 4.24'/%3E%3Cpath d='m9.17 14.83-4.24 4.24'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Johns Hopkins COVID-19 Prediction & ML Forecasting Platform</title>
-    <meta name="description" content="Interactive epidemiological analysis and machine learning forecasting platform based on Johns Hopkins COVID-19 time-series data featuring Linear Regression, Decision Trees, Random Forest, and XGBoost models." />
-    <meta property="og:title" content="Johns Hopkins COVID-19 Prediction & ML Forecasting Platform" />
-    <meta property="og:description" content="Interactive epidemiological analysis and machine learning forecasting platform based on Johns Hopkins COVID-19 time-series data." />
-    <!-- Google Inter Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  </head>
-  <body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-blue-600 selection:text-white">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m4.93 4.93 4.24 4.24'/%3E%3Cpath d='m14.83 9.17 4.24-4.24'/%3E%3Cpath d='m14.83 14.83 4.24 4.24'/%3E%3Cpath d='m9.17 14.83-4.24 4.24'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E">
+  <title>Johns Hopkins COVID-19 Prediction & ML Forecasting Platform</title>
+  <meta name="description" content="Interactive epidemiological analysis and machine learning forecasting platform based on Johns Hopkins COVID-19 time-series data featuring Linear Regression, Decision Trees, Random Forest, and XGBoost models.">
+  <meta property="og:title" content="Johns Hopkins COVID-19 Prediction & ML Forecasting Platform">
+  <meta property="og:description" content="Interactive epidemiological analysis and machine learning forecasting platform based on Johns Hopkins COVID-19 time-series data.">
+
+  <!-- Typography: Google Fonts Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Lightweight Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Fixed Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon-box">🦠</div>
+        <div class="brand-meta">
+          <span class="brand-title">Johns Hopkins ML</span>
+          <span class="brand-badge">PRCP-1023 Platform</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Overview & Discovery</span>
+        <a class="nav-item active" data-target="overview">
+          <span class="nav-item-icon">📊</span>
+          <span class="nav-item-text">Executive Overview</span>
+        </a>
+        <a class="nav-item" data-target="explorer">
+          <span class="nav-item-icon">📁</span>
+          <span class="nav-item-text">Data Explorer</span>
+        </a>
+        <a class="nav-item" data-target="analytics">
+          <span class="nav-item-icon">📈</span>
+          <span class="nav-item-text">COVID Analytics</span>
+        </a>
+
+        <span class="nav-section-title">Machine Learning</span>
+        <a class="nav-item" data-target="feature-lab">
+          <span class="nav-item-icon">⚙️</span>
+          <span class="nav-item-text">Feature Lab</span>
+        </a>
+        <a class="nav-item" data-target="models">
+          <span class="nav-item-icon">🧠</span>
+          <span class="nav-item-text">Model Lab</span>
+          <span class="nav-item-badge">4 Models</span>
+        </a>
+        <a class="nav-item" data-target="optimization">
+          <span class="nav-item-icon">🎛️</span>
+          <span class="nav-item-text">Optimization</span>
+        </a>
+
+        <span class="nav-section-title">Forecasting & Policy</span>
+        <a class="nav-item" data-target="forecast">
+          <span class="nav-item-icon">🔮</span>
+          <span class="nav-item-text">Forecast Studio</span>
+          <span class="nav-item-badge">30-Day</span>
+        </a>
+        <a class="nav-item" data-target="decision">
+          <span class="nav-item-icon">🛡️</span>
+          <span class="nav-item-text">Decision Intelligence</span>
+        </a>
+
+        <span class="nav-section-title">Governance & Docs</span>
+        <a class="nav-item" data-target="methodology">
+          <span class="nav-item-icon">📋</span>
+          <span class="nav-item-text">Methodology</span>
+        </a>
+        <a class="nav-item" data-target="limitations">
+          <span class="nav-item-icon">⚠️</span>
+          <span class="nav-item-text">Limitations & Scope</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="UIManager.toggleTheme()">
+          <span id="theme-toggle-icon">🌙</span>
+          <span id="theme-toggle-label">Dark</span>
+        </button>
+        <span style="font-size: 0.7rem; color: var(--text-muted);">v1.0.0 Static</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Sticky Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="btn-menu-toggle" aria-label="Toggle Navigation Menu">☰</button>
+          <div class="breadcrumb-path">
+            <span>Project</span>
+            <span>/</span>
+            <span class="breadcrumb-active" id="breadcrumb-active-title">Executive Overview</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <div class="global-country-select-box">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Region:</span>
+            <select class="country-select-sync" aria-label="Select Country or Global Region"></select>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <main class="content-body">
+
+        <!-- ====================================================================
+             PAGE 1 — EXECUTIVE OVERVIEW
+             ==================================================================== -->
+        <section class="page-section active" id="section-overview">
+          <div class="hero-banner">
+            <span class="section-head-badge">Data Science & ML Predictive Suite</span>
+            <h1 class="hero-title">Johns Hopkins COVID-19 Prediction</h1>
+            <p class="hero-desc">
+              From Global Pandemic Data to Machine Learning Forecasts. An end-to-end analytical framework synthesizing 244 continuous time-series observations into predictive regression models and policy decision intelligence.
+            </p>
+            <div class="hero-cta-row">
+              <a href="#forecast" class="btn-primary" onclick="document.querySelector('[data-target=\'forecast\']').click()">
+                <span>Launch Forecast Studio</span>
+                <span>→</span>
+              </a>
+              <a href="#models" class="btn-secondary" onclick="document.querySelector('[data-target=\'models\']').click()">
+                <span>Inspect ML Models</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid (Animated Counters from JHU CSSE dataset) -->
+          <div class="kpi-grid">
+            <div class="glass-card kpi-card">
+              <div class="kpi-top-row">
+                <span class="kpi-label">Total Confirmed</span>
+                <div class="kpi-icon" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">👥</div>
+              </div>
+              <div class="kpi-value" id="kpi-confirmed">31,252,119</div>
+              <div class="kpi-footer">
+                <span class="kpi-badge-positive" id="overview-country-name">🌐 Global Total</span>
+                <span id="overview-country-iso">(GLOBAL)</span>
+              </div>
+            </div>
+
+            <div class="glass-card kpi-card">
+              <div class="kpi-top-row">
+                <span class="kpi-label">Active Infections</span>
+                <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">🔥</div>
+              </div>
+              <div class="kpi-value" id="kpi-active" style="color: var(--accent-amber);">8,891,588</div>
+              <div class="kpi-footer">
+                <span style="color: var(--text-secondary);">Effective Rt:</span>
+                <strong id="kpi-rt-val" style="color: var(--accent-amber);">1.05</strong>
+              </div>
+            </div>
+
+            <div class="glass-card kpi-card">
+              <div class="kpi-top-row">
+                <span class="kpi-label">Clinical Recoveries</span>
+                <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">💚</div>
+              </div>
+              <div class="kpi-value" id="kpi-recovered" style="color: var(--accent-emerald);">21,396,841</div>
+              <div class="kpi-footer">
+                <span style="color: var(--text-secondary);">Recovery Rate:</span>
+                <strong id="kpi-rec-rate-val" style="color: var(--accent-emerald);">68.47%</strong>
+              </div>
+            </div>
+
+            <div class="glass-card kpi-card">
+              <div class="kpi-top-row">
+                <span class="kpi-label">Recorded Deaths</span>
+                <div class="kpi-icon" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">⚰️</div>
+              </div>
+              <div class="kpi-value" id="kpi-deaths" style="color: var(--accent-rose);">963,690</div>
+              <div class="kpi-footer">
+                <span style="color: var(--text-secondary);">Case Fatality Rate:</span>
+                <strong id="kpi-cfr-val" style="color: var(--accent-rose);">3.08%</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Workflow Stages -->
+          <div class="glass-card">
+            <div class="card-header-row">
+              <div class="card-title-group">
+                <div class="card-title-icon">🔄</div>
+                <div>
+                  <h3 class="card-heading">Data Science Lifecycle & Workflow</h3>
+                  <p class="card-subtext">Rigorous 8-stage methodology from raw JHU CSV ingestion to 30-day forward forecasting</p>
+                </div>
+              </div>
+            </div>
+            <div class="workflow-pipeline">
+              <div class="pipeline-node"><span class="pipeline-node-num">01 DATA</span><span class="pipeline-node-title">JHU CSSE</span><span class="pipeline-node-desc">244 daily dates</span></div>
+              <div class="pipeline-node"><span class="pipeline-node-num">02 CLEAN</span><span class="pipeline-node-title">Melt & Impute</span><span class="pipeline-node-desc">Long format matrix</span></div>
+              <div class="pipeline-node"><span class="pipeline-node-num">03 ANALYZE</span><span class="pipeline-node-title">EDA Waves</span><span class="pipeline-node-desc">CFR & Day-0 alignment</span></div>
+              <div class="pipeline-node"><span class="pipeline-node-num">04 ENGINEER</span><span class="pipeline-node-title">Lags & Rolling</span><span class="pipeline-node-desc">Lag-1, 7, 14, growth %</span></div>
+              <div class="pipeline-node"><span class="pipeline-node-num">05 MODEL</span><span class="pipeline-node-title">4 Regressors</span><span class="pipeline-node-desc">OLS, Trees, RF, XGB</span></div>
+              <div class="pipeline-node"><span class="pipeline-node-num">06 OPTIMIZE</span><span class="pipeline-node-title">Tuning</span><span class="pipeline-node-desc">RandomizedSearchCV</span></div>
+              <div class="pipeline-node"><span class="pipeline-node-num">07 FORECAST</span><span class="pipeline-node-title">30-Day Ahead</span><span class="pipeline-node-desc">Confidence intervals</span></div>
+              <div class="pipeline-node"><span class="pipeline-node-num">08 DECIDE</span><span class="pipeline-node-title">Policy & ICU</span><span class="pipeline-node-desc">Healthcare allocation</span></div>
+            </div>
+          </div>
+
+          <!-- Problem Statement & Metadata Overview -->
+          <div class="glass-card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+            <div>
+              <h3 class="card-heading" style="margin-bottom: 0.75rem;">Problem Statement & Context</h3>
+              <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
+                The explosive dissemination of COVID-19 across 2020 presented unprecedented challenges to epidemiological surveillance and resource planning. This project utilizes the authoritative time-series repository published by Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE) to model dynamic transmission rates, evaluate regression architectures, and simulate forward healthcare requirements.
+              </p>
+            </div>
+            <div>
+              <h3 class="card-heading" style="margin-bottom: 0.75rem;">Dataset & Modeling Specifications</h3>
+              <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem;">
+                <li><strong style="color: var(--text-primary);">Time Span:</strong> Jan 22, 2020 – Sep 21, 2020 (244 continuous daily observations)</li>
+                <li><strong style="color: var(--text-primary);">Geographic Scope:</strong> 188 sovereign countries and territories</li>
+                <li><strong style="color: var(--text-primary);">Split Scheme:</strong> Sequential 80/20 TimeSeriesSplit without lookahead leakage</li>
+                <li><strong style="color: var(--text-primary);">Primary Target:</strong> Cumulative Confirmed & Daily New Incident Cases</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 2 — DATA EXPLORER & QUALITY AUDIT
+             ==================================================================== -->
+        <section class="page-section" id="section-explorer">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Data Quality & Raw Matrix Audit</span>
+            <h2 class="section-title">Dataset Explorer & Preprocessing Pipeline</h2>
+            <p class="section-subtitle">
+              Interactive inspection of raw and transformed time-series records across 188 territories, including missing value audits, type conversions, and wide-to-long unpivoting steps.
+            </p>
+          </div>
+
+          <!-- Quality Cards -->
+          <div class="kpi-grid">
+            <div class="glass-card">
+              <span class="kpi-label">Confirmed Dataset Shape</span>
+              <div class="kpi-value font-mono">266 × 248</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">266 rows (Regions) × 244 dates + 4 geo columns</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">Province/State Nulls</span>
+              <div class="kpi-value font-mono" style="color: var(--accent-amber);">69.5%</div>
+              <span style="font-size: 0.8rem; color: var(--accent-emerald);">✓ Aggregated cleanly by Country/Region</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">Date Chronology</span>
+              <div class="kpi-value font-mono" style="color: var(--accent-emerald);">100% Valid</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Strictly monotonic daily timeline</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">Duplicate Rows</span>
+              <div class="kpi-value font-mono" style="color: var(--accent-emerald);">0 Duplicates</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Audit verified unique country centroids</span>
+            </div>
+          </div>
+
+          <!-- Interactive Table -->
+          <div class="glass-card">
+            <div class="table-toolbar">
+              <div class="search-input-box">
+                <span>🔍</span>
+                <input type="text" id="data-table-search" placeholder="Search country, date, or cases...">
+              </div>
+              <div class="pagination-controls">
+                <span id="data-table-count-info">Showing 1 - 10 of 18 rows</span>
+                <button class="page-btn" id="data-table-prev">Previous</button>
+                <span id="data-table-page-info" style="font-weight: 600;">Page 1 of 2</span>
+                <button class="page-btn" id="data-table-next">Next</button>
+                <button class="btn-secondary" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;" onclick="UIManager.exportToCSV('COVID19_JHU_Sample_Data.csv', window.SAMPLE_PREVIEW_ROWS.map(r => Object.values(r)))">Export CSV</button>
+              </div>
+            </div>
+
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Country / Region</th>
+                    <th>Province / State</th>
+                    <th>Date</th>
+                    <th>Confirmed</th>
+                    <th>Deaths</th>
+                    <th>Recovered</th>
+                    <th>Active</th>
+                    <th>Daily New</th>
+                    <th>CFR %</th>
+                  </tr>
+                </thead>
+                <tbody id="data-preview-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 3 — GLOBAL COVID ANALYTICS
+             ==================================================================== -->
+        <section class="page-section" id="section-analytics">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Exploratory Data Science & Visuals</span>
+            <h2 class="section-title">Global COVID-19 Analytics & Trajectories</h2>
+            <p class="section-subtitle">
+              Comprehensive statistical and visual exploration of infection waves, cross-national Day-0 alignment curves, Case Fatality Rates, and feature correlation dynamics.
+            </p>
+          </div>
+
+          <!-- Main Trend Chart -->
+          <div class="glass-card">
+            <div class="chart-controls-row">
+              <div class="card-title-group">
+                <div class="card-title-icon">📈</div>
+                <div>
+                  <h3 class="card-heading">Epidemic Progression Timeline</h3>
+                  <p class="card-subtext">Multi-metric smoothed time series (Jan 22, 2020 – Sep 21, 2020)</p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <div class="btn-group">
+                  <button class="btn-group-item btn-trend-metric active" data-metric="rolling" onclick="AnalyticsManager.setTrendMetric('rolling')">7-Day Moving Avg</button>
+                  <button class="btn-group-item btn-trend-metric" data-metric="daily" onclick="AnalyticsManager.setTrendMetric('daily')">Daily Cases</button>
+                  <button class="btn-group-item btn-trend-metric" data-metric="cumulative" onclick="AnalyticsManager.setTrendMetric('cumulative')">Cumulative</button>
+                  <button class="btn-group-item btn-trend-metric" data-metric="deaths_rec" onclick="AnalyticsManager.setTrendMetric('deaths_rec')">Deaths & Recoveries</button>
+                </div>
+
+                <button class="btn-secondary" id="btn-scale-toggle" style="padding: 0.35rem 0.85rem; font-size: 0.78rem;" onclick="AnalyticsManager.toggleScale()">Scale: Linear</button>
+              </div>
+            </div>
+
+            <div class="chart-box chart-box-lg">
+              <canvas id="main-epidemic-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- 2-Column Grid: Day 0 Outbreak Alignment & CFR Scatter -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem;">
+            <div class="glass-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">🌍</div>
+                  <div>
+                    <h3 class="card-heading">Day 0 Outbreak Alignment</h3>
+                    <p class="card-subtext">Days elapsed since country crossed 1,000 cases (Log Scale)</p>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-box">
+                <canvas id="day0-alignment-chart"></canvas>
+              </div>
+            </div>
+
+            <div class="glass-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">📉</div>
+                  <div>
+                    <h3 class="card-heading">CFR % vs Recovery Rate %</h3>
+                    <p class="card-subtext">Case Fatality Rate vs Clinical Recovery distribution across nations</p>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-box">
+                <canvas id="cfr-scatter-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Correlation Heatmap Matrix & Top 10 Table -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem;">
+            <div class="glass-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">🧩</div>
+                  <div>
+                    <h3 class="card-heading">Feature Correlation Matrix (Pearson r)</h3>
+                    <p class="card-subtext">Multi-collinearity and predictive signal correlation with target cases</p>
+                  </div>
+                </div>
+              </div>
+              <div id="correlation-matrix-grid" class="table-wrapper"></div>
+            </div>
+
+            <div class="glass-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">🏆</div>
+                  <div>
+                    <h3 class="card-heading">Top Affected Countries</h3>
+                    <p class="card-subtext">Click any country row to drill-down and load forecasting models</p>
+                  </div>
+                </div>
+              </div>
+              <div class="table-wrapper" style="max-height: 320px; overflow-y: auto;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Country</th>
+                      <th>Confirmed</th>
+                      <th>Deaths</th>
+                      <th>Recovered</th>
+                      <th>CFR</th>
+                      <th>Recovery</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="top-countries-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 4 — FEATURE ENGINEERING LAB
+             ==================================================================== -->
+        <section class="page-section" id="section-feature-lab">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Signal Extraction & Feature Store</span>
+            <h2 class="section-title">Feature Engineering Laboratory</h2>
+            <p class="section-subtitle">
+              How raw daily COVID time series are transformed into ML-ready feature matrices through auto-regressive lag generation, rolling window aggregations, and velocity indicators.
+            </p>
+          </div>
+
+          <!-- Visual Pipeline -->
+          <div class="glass-card">
+            <div class="card-header-row">
+              <div class="card-title-group">
+                <div class="card-title-icon">⚙️</div>
+                <div>
+                  <h3 class="card-heading">Feature Transformation Architecture</h3>
+                  <p class="card-subtext">Step-by-step mathematical conversion from raw JHU counts to supervised learning tabular format</p>
+                </div>
+              </div>
+            </div>
+            <div class="workflow-pipeline" id="feature-pipeline-container"></div>
+          </div>
+
+          <!-- Feature Dictionary Table -->
+          <div class="glass-card">
+            <div class="card-header-row">
+              <div class="card-title-group">
+                <div class="card-title-icon">📖</div>
+                <div>
+                  <h3 class="card-heading">Engineered Feature Dictionary</h3>
+                  <p class="card-subtext">Mathematical formulations, statistical classifications, and predictive purposes</p>
+                </div>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Feature Name</th>
+                    <th>Type</th>
+                    <th>Mathematical Formulation & Description</th>
+                    <th>Predictive Signal Purpose</th>
+                  </tr>
+                </thead>
+                <tbody id="feature-dictionary-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 5 — MACHINE LEARNING MODEL LAB
+             ==================================================================== -->
+        <section class="page-section" id="section-models">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Supervised Learning & Regression Suite</span>
+            <h2 class="section-title">Machine Learning Model Laboratory</h2>
+            <p class="section-subtitle">
+              Comparative evaluation of Linear Regression, Decision Tree, Random Forest, and XGBoost models trained on 80/20 chronological time-series partitions.
+            </p>
+          </div>
+
+          <!-- Model Selection Cards Grid -->
+          <div class="model-grid" id="models-grid-container"></div>
+
+          <!-- Selected Model Detail Box -->
+          <div class="glass-card">
+            <div class="card-header-row">
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <h3 class="card-heading" id="selected-model-name">XGBoost Regressor (Tuned)</h3>
+                  <span id="selected-model-badge" class="badge-tag badge-best">Best Performer ★</span>
+                </div>
+                <p class="card-subtext" id="selected-model-desc">Optimized Extreme Gradient Boosted Trees minimizing second-order Taylor expansion loss.</p>
+              </div>
+            </div>
+
+            <!-- Model Evaluation KPIs -->
+            <div class="kpi-grid" style="margin-bottom: 1.5rem;">
+              <div class="glass-card" style="padding: 1rem;">
+                <span class="kpi-label">Test MAE (Mean Absolute Error)</span>
+                <div class="kpi-value font-mono" id="model-metric-mae" style="font-size: 1.5rem;">44,320</div>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Average case error margin</span>
+              </div>
+              <div class="glass-card" style="padding: 1rem;">
+                <span class="kpi-label">Test RMSE (Root Mean Sq Error)</span>
+                <div class="kpi-value font-mono" id="model-metric-rmse" style="font-size: 1.5rem; color: var(--accent-blue);">62,890</div>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Penalizes large variance spikes</span>
+              </div>
+              <div class="glass-card" style="padding: 1rem;">
+                <span class="kpi-label">Test R² (Determination Score)</span>
+                <div class="kpi-value font-mono" id="model-metric-r2" style="font-size: 1.5rem; color: var(--accent-emerald);">0.9918</div>
+                <span style="font-size: 0.72rem; color: var(--accent-emerald);">✓ High variance explanation</span>
+              </div>
+              <div class="glass-card" style="padding: 1rem;">
+                <span class="kpi-label">Test MAPE / Latency</span>
+                <div class="kpi-value font-mono" id="model-metric-mape" style="font-size: 1.5rem; color: var(--accent-amber);">1.48%</div>
+                <span style="font-size: 0.72rem; color: var(--text-muted);">Train latency: <span id="model-metric-time">185ms</span></span>
+              </div>
+            </div>
+
+            <!-- 2-Column: Actual vs Predicted Chart & Feature Importance -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;">
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Actual vs Predicted Trajectory Fit</h4>
+                <div class="chart-box">
+                  <canvas id="model-actual-vs-predicted-chart"></canvas>
+                </div>
+              </div>
+
+              <div>
+                <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">Feature Importance Breakdown</h4>
+                <div id="feature-importance-container"></div>
+                <div style="margin-top: 1rem;">
+                  <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Out-of-Sample Residual Errors</h4>
+                  <div class="chart-box" style="height: 180px;">
+                    <canvas id="model-residuals-chart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Architectural Tradeoffs -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+              <div style="background: rgba(16, 185, 129, 0.08); padding: 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-emerald);">
+                <strong style="color: var(--accent-emerald); font-size: 0.8rem; text-transform: uppercase;">Key Architectural Strengths</strong>
+                <p id="selected-model-strengths" style="font-size: 0.82rem; color: var(--text-primary); margin-top: 0.3rem;">State-of-the-art accuracy with R² > 0.99.</p>
+              </div>
+              <div style="background: rgba(244, 63, 94, 0.08); padding: 1rem; border-radius: var(--radius-md); border-left: 3px solid var(--accent-rose);">
+                <strong style="color: var(--accent-rose); font-size: 0.8rem; text-transform: uppercase;">Identified Model Weaknesses</strong>
+                <p id="selected-model-weaknesses" style="font-size: 0.82rem; color: var(--text-primary); margin-top: 0.3rem;">Requires tuning to prevent learning rate drift.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Model Leaderboard Table -->
+          <div class="glass-card">
+            <div class="card-header-row">
+              <div class="card-title-group">
+                <div class="card-title-icon">🏆</div>
+                <div>
+                  <h3 class="card-heading">4-Model Benchmark Leaderboard</h3>
+                  <p class="card-subtext">Ranked comparison based on out-of-sample test R² determination and error minimization</p>
+                </div>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Model Architecture</th>
+                    <th>MAE (Cases)</th>
+                    <th>RMSE (Cases)</th>
+                    <th>R² Score</th>
+                    <th>MAPE %</th>
+                    <th>Train Latency</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="model-leaderboard-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 6 — MODEL OPTIMIZATION
+             ==================================================================== -->
+        <section class="page-section" id="section-optimization">
+          <div class="section-head-banner">
+            <span class="section-head-badge">RandomizedSearchCV & Hyperparameter Tuning</span>
+            <h2 class="section-title">Model Hyperparameter Optimization</h2>
+            <p class="section-subtitle">
+              Scientific tuning of the gradient boosting architecture using 5-fold TimeSeriesSplit cross-validation to prevent temporal overfitting.
+            </p>
+          </div>
+
+          <!-- Optimization Metrics Delta -->
+          <div class="kpi-grid">
+            <div class="glass-card">
+              <span class="kpi-label">MAE Error Reduction</span>
+              <div class="kpi-value font-mono" id="opt-mae-reduction" style="color: var(--accent-emerald);">-50.4%</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">From 89,400 down to 44,320 cases</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">RMSE Error Reduction</span>
+              <div class="kpi-value font-mono" id="opt-rmse-reduction" style="color: var(--accent-emerald);">-49.5%</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">From 124,500 down to 62,890 cases</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">R² Score Gain</span>
+              <div class="kpi-value font-mono" id="opt-r2-gain" style="color: var(--accent-emerald);">+0.0206</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">From 0.9712 up to 0.9918 (+2.1%)</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">MAPE Improvement</span>
+              <div class="kpi-value font-mono" id="opt-mape-reduction" style="color: var(--accent-emerald);">-1.47%</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Halved overall percentage error</span>
+            </div>
+          </div>
+
+          <!-- 2-Column: Search Space Table & Before/After Chart -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem;">
+            <div class="glass-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">🎛️</div>
+                  <div>
+                    <h3 class="card-heading">Hyperparameter Search Space & Best Values</h3>
+                    <p class="card-subtext">50 randomized iterations over regularized XGBoost parameters</p>
+                  </div>
+                </div>
+              </div>
+              <div class="table-wrapper">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Parameter</th>
+                      <th>Search Space</th>
+                      <th>Optimal Value</th>
+                      <th>Scientific Rationale</th>
+                    </tr>
+                  </thead>
+                  <tbody id="opt-search-space-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="glass-card">
+              <div class="card-header-row">
+                <div class="card-title-group">
+                  <div class="card-title-icon">📊</div>
+                  <div>
+                    <h3 class="card-heading">Baseline vs Tuned Error Comparison</h3>
+                    <p class="card-subtext">MAE and RMSE error reduction post-RandomizedSearchCV</p>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-box">
+                <canvas id="optimization-comparison-chart"></canvas>
+              </div>
+              <div class="table-wrapper" style="margin-top: 1rem;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Configuration</th>
+                      <th>Test MAE</th>
+                      <th>Test RMSE</th>
+                      <th>Test R²</th>
+                      <th>MAPE</th>
+                    </tr>
+                  </thead>
+                  <tbody id="opt-comparison-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 7 — FORECAST STUDIO
+             ==================================================================== -->
+        <section class="page-section" id="section-forecast">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Multi-Step Recursive Outbreak Projection</span>
+            <h2 class="section-title">30-Day Forward Forecast Studio</h2>
+            <p class="section-subtitle">
+              Generating 30-day ahead projections (September 22 – October 21, 2020) for India (and comparator countries) using the tuned XGBoost model with policy intervention sandbox controls.
+            </p>
+          </div>
+
+          <!-- Horizon & Country Controls -->
+          <div class="glass-card" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <span style="font-weight: 600; color: var(--text-primary);">Forecast Target:</span>
+              <select id="forecast-country-select" style="background: var(--bg-tertiary); border: 1px solid var(--border-subtle); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 600;">
+                <option value="India" selected>🇮🇳 India (Notebook Deep-Dive Focus)</option>
+                <option value="US">🇺🇸 United States</option>
+                <option value="Brazil">🇧🇷 Brazil</option>
+                <option value="Global">🌐 Global Total</option>
+                <option value="Russia">🇷🇺 Russia</option>
+                <option value="UK">🇬🇧 United Kingdom</option>
+              </select>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--text-secondary);">
+              Horizon: <strong style="color: var(--accent-blue);">30 Days</strong> (Sep 22 – Oct 21, 2020)
+            </div>
+          </div>
+
+          <!-- Forecast Summary KPIs -->
+          <div class="kpi-grid">
+            <div class="glass-card">
+              <span class="kpi-label">Starting Forecast (Day 1)</span>
+              <div class="kpi-value font-mono" id="fc-start-cases">5,574,080</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">September 22, 2020</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">Ending Forecast (Day 30)</span>
+              <div class="kpi-value font-mono" id="fc-end-cases" style="color: var(--accent-blue);">7,842,500</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">October 21, 2020</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">Total Forecasted Growth</span>
+              <div class="kpi-value font-mono" id="fc-total-added" style="color: var(--accent-amber);">+2,354,920</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);" id="fc-avg-daily">~78,497 / day average</span>
+            </div>
+            <div class="glass-card">
+              <span class="kpi-label">Cumulative Growth Rate</span>
+              <div class="kpi-value font-mono" id="fc-growth-pct" style="color: var(--accent-rose);">+42.9%</div>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">30-day percentage expansion</span>
+            </div>
+          </div>
+
+          <!-- Main Forecast Graph -->
+          <div class="glass-card">
+            <div class="card-header-row">
+              <div class="card-title-group">
+                <div class="card-title-icon">🔮</div>
+                <div>
+                  <h3 class="card-heading">Historical Observed vs 30-Day Machine Learning Projection</h3>
+                  <p class="card-subtext">Historical observed curve transitioning into 30-day forecast with confidence interval band</p>
+                </div>
+              </div>
+            </div>
+            <div class="chart-box chart-box-lg">
+              <canvas id="main-forecast-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Policy Sandbox & Healthcare Burden Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem;">
+            <!-- Policy Slider Sandbox -->
+            <div class="glass-card">
+              <h3 class="card-heading" style="margin-bottom: 0.5rem;">Policy Intervention Sandbox</h3>
+              <p class="card-subtext" style="margin-bottom: 1.25rem;">Simulate how public health compliance modifies transmission velocity</p>
+
+              <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                <div class="slider-container">
+                  <div class="slider-label-row">
+                    <span>Containment Strictness</span>
+                    <span class="font-mono" style="color: var(--accent-blue);" id="val-containment">30%</span>
+                  </div>
+                  <input type="range" class="custom-slider" id="slider-containment" min="0" max="100" value="30">
+                </div>
+
+                <div class="slider-container">
+                  <div class="slider-label-row">
+                    <span>Mask Compliance</span>
+                    <span class="font-mono" style="color: var(--accent-emerald);" id="val-masks">50%</span>
+                  </div>
+                  <input type="range" class="custom-slider" id="slider-masks" min="0" max="100" value="50">
+                </div>
+
+                <div class="slider-container">
+                  <div class="slider-label-row">
+                    <span>Daily Vaccination Rollout</span>
+                    <span class="font-mono" style="color: var(--accent-indigo);" id="val-vaccines">0.3%</span>
+                  </div>
+                  <input type="range" class="custom-slider" id="slider-vaccines" min="0" max="1.5" step="0.1" value="0.3">
+                </div>
+              </div>
+            </div>
+
+            <!-- Projected Healthcare Burden -->
+            <div class="glass-card">
+              <h3 class="card-heading" style="margin-bottom: 0.5rem;">Projected Day-30 Healthcare Burden</h3>
+              <p class="card-subtext" style="margin-bottom: 1.25rem;">Estimated clinical requirements at the end of the 30-day forecast horizon</p>
+
+              <div class="kpi-grid" style="grid-template-columns: 1fr 1fr;">
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md);">
+                  <span class="kpi-label">Inpatient Hospital Beds</span>
+                  <div class="kpi-value font-mono" id="burden-hospital-beds" style="font-size: 1.4rem;">47,250</div>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">4.5% acute admission rate</span>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md);">
+                  <span class="kpi-label">ICU Critical Beds</span>
+                  <div class="kpi-value font-mono" id="burden-icu-beds" style="font-size: 1.4rem; color: var(--accent-amber);">12,600</div>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">1.2% intensive care need</span>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md);">
+                  <span class="kpi-label">Ventilators Required</span>
+                  <div class="kpi-value font-mono" id="burden-vents" style="font-size: 1.4rem; color: var(--accent-rose);">4,200</div>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">0.4% mechanical ventilation</span>
+                </div>
+                <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md);">
+                  <span class="kpi-label">Liquid Medical Oxygen</span>
+                  <div class="kpi-value font-mono" id="burden-oxygen" style="font-size: 1.4rem; color: var(--accent-emerald);">708.8 T/day</div>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">15 kg/bed daily allocation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 30-Day Forecast Table -->
+          <div class="glass-card">
+            <div class="card-header-row">
+              <div class="card-title-group">
+                <div class="card-title-icon">📋</div>
+                <div>
+                  <h3 class="card-heading">30-Day Tabular Daily Projections</h3>
+                  <p class="card-subtext">Day-by-day forecasted confirmed counts, 95% confidence intervals, and critical ICU demands</p>
+                </div>
+              </div>
+              <button class="btn-primary" style="padding: 0.45rem 0.95rem; font-size: 0.8rem;" onclick="ForecastManager.exportForecastData()">Export Forecast CSV</button>
+            </div>
+            <div class="table-wrapper" style="max-height: 380px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Horizon</th>
+                    <th>Date</th>
+                    <th>Predicted Confirmed</th>
+                    <th>Daily New</th>
+                    <th>95% CI Interval</th>
+                    <th>ICU Beds Needed</th>
+                    <th>Oxygen Demand</th>
+                  </tr>
+                </thead>
+                <tbody id="forecast-table-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 8 — DECISION INTELLIGENCE
+             ==================================================================== -->
+        <section class="page-section" id="section-decision">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Translational Public Health Framework</span>
+            <h2 class="section-title">Decision Intelligence & Policy Matrix</h2>
+            <p class="section-subtitle">
+              Translating machine learning trajectory forecasts into actionable interventions for public health authorities, hospital administrators, and supply chain coordinators.
+            </p>
+          </div>
+
+          <!-- Strategic Pillars Grid -->
+          <div class="decision-grid" id="decision-matrix-container"></div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 9 — METHODOLOGY
+             ==================================================================== -->
+        <section class="page-section" id="section-methodology">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Scientific Rigor & Pipeline Design</span>
+            <h2 class="section-title">End-to-End Methodology Architecture</h2>
+            <p class="section-subtitle">
+              Detailed step-by-step documentation of the mathematical and data engineering procedures implemented throughout the project.
+            </p>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;" id="methodology-stages-container"></div>
+        </section>
+
+
+        <!-- ====================================================================
+             PAGE 10 — LIMITATIONS & CONCLUSIONS
+             ==================================================================== -->
+        <section class="page-section" id="section-limitations">
+          <div class="section-head-banner">
+            <span class="section-head-badge">Transparent Scientific Auditing</span>
+            <h2 class="section-title">Project Limitations, Key Findings & Future Scope</h2>
+            <p class="section-subtitle">
+              Critical evaluation of dataset biases, regression boundary conditions, and recommended pathways for compartmental epidemiological integration.
+            </p>
+          </div>
+
+          <!-- Key Limitations -->
+          <h3 class="card-heading" style="margin-top: 0.5rem;">Scientific Limitations & Model Boundaries</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem;" id="limitations-grid-container"></div>
+
+          <!-- Summary & Future Work -->
+          <div class="glass-card" style="margin-top: 1.5rem;">
+            <h3 class="card-heading" style="margin-bottom: 0.75rem;">Synthesis of Key Findings</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+              The project demonstrates that non-linear gradient-boosted decision trees (XGBoost) combined with auto-regressive lag signals (Lag-1, Lag-7) and rolling window aggregations achieve superior forecasting fidelity (R² > 0.99) compared to naive linear regressions during steep outbreak acceleration stages. Hyperparameter tuning via RandomizedSearchCV reduced test prediction error by over 50%.
+            </p>
+
+            <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Recommended Future Extensions</h4>
+            <ul style="list-style: none; font-size: 0.85rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.5rem;">
+              <li>• <strong>SEIR Hybrid Integration:</strong> Coupling machine learning gradient boosting with biological compartmental differential equations to enforce herd-immunity saturation.</li>
+              <li>• <strong>Exogenous Policy Signals:</strong> Incorporating Oxford Stringency Index and Apple/Google Mobility indices as dynamic time-varying covariates.</li>
+              <li>• <strong>Sub-National District Modeling:</strong> Scaling the pipeline to localized administrative levels to resolve micro-cluster hotspots.</li>
+            </ul>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div>
+          <strong>PRCP-1023 : Johns Hopkins COVID-19 Prediction</strong>
+          <div style="color: var(--text-muted); font-size: 0.75rem;">Authoritative Source: JHU CSSE COVID-19 Time-Series Repository</div>
+        </div>
+        <div style="display: flex; gap: 1.5rem;">
+          <span>Static HTML5 / CSS3 / Vanilla JS</span>
+          <span>•</span>
+          <span>Zero Framework Dependencies</span>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 0.5rem;"></div>
+
+  <!-- Data Scripts (Loaded First) -->
+  <script src="data/project-data.js"></script>
+  <script src="data/covid-data.js"></script>
+  <script src="data/model-results.js"></script>
+  <script src="data/forecast-data.js"></script>
+
+  <!-- Application Logic Modules -->
+  <script src="js/charts.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/feature-lab.js"></script>
+  <script src="js/models.js"></script>
+  <script src="js/optimization.js"></script>
+  <script src="js/forecast.js"></script>
+  <script src="js/decision.js"></script>
+
+  <!-- Main Orchestrator (Loaded Last) -->
+  <script src="js/app.js"></script>
+
+</body>
 </html>
